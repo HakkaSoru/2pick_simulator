@@ -667,6 +667,11 @@
                 { rarity: "シルバー", groups: { "normal": 0.63, "new": 0.2, "normal-n": 0.14, "new-n": 0.03, } },
                 { rarity: "ブロンズ", groups: { "normal": 0.65, "new": 0.18, "normal-n": 0.13, "new-n": 0.04, } },
                 { rarity: "ゴールド/レジェンド", groups: { "normal": 0.59, "new": 0.24, "normal-n": 0.11, "new-n": 0.06, } },
+                { rarity: "ブロンズ", groups: { "normal": 0.65, "new": 0.18, "normal-n": 0.13, "new-n": 0.04, } },
+                { rarity: "シルバー", groups: { "normal": 0.63, "new": 0.2, "normal-n": 0.14, "new-n": 0.03, } },
+                { rarity: "ブロンズ", groups: { "normal": 0.65, "new": 0.18, "normal-n": 0.13, "new-n": 0.04, } },
+                { rarity: "シルバー", groups: { "normal": 0.63, "new": 0.2, "normal-n": 0.14, "new-n": 0.03, } },
+                { rarity: "ゴールド/レジェンド", groups: { "normal": 0.59, "new": 0.24, "normal-n": 0.11, "new-n": 0.06, } },
             ];
 
             const state = {
@@ -744,19 +749,19 @@
                 elements.pickPhase.style.display = 'block';
                 
                 state.pickCount = 0;
-                elements.pickCountDisplay.textContent = `${state.pickCount}/14`;
+                elements.pickCountDisplay.textContent = `${state.pickCount}/19`;
                 
                 pickNext();
             }
 
             function pickNext() {
-                if (state.pickCount >= 14) {
+                if (state.pickCount >= 19) {
                     endSimulation();
                     return;
                 }
 
                 state.pickCount++;
-                elements.pickCountDisplay.textContent = `${state.pickCount}/14`;
+                elements.pickCountDisplay.textContent = `${state.pickCount}/19`;
 
                 const choices = getChoicesForPick(state.pickCount - 1);
                 renderChoices(choices);
