@@ -1072,9 +1072,18 @@
                     });
                 }
                 
-                addLog(`>> QRコードを生成しました。`);
-                // URLをログに表示（デバッグ用）
-                console.log("Generated Deck URL:", deckUrl);
+                addLog(`>> デッキリンク・QRコードを生成しました。`);
+                
+                // ★★★ 修正箇所 ★★★
+                // ログにURLリンクを表示
+                const logP = document.createElement('p');
+                const logA = document.createElement('a');
+                logA.href = deckUrl;
+                logA.textContent = deckUrl;
+                logA.target = "_blank"; // リンクを新しいタブで開く
+                logA.rel = "noopener noreferrer"; // セキュリティ対策
+                logP.appendChild(logA);
+                elements.log.prepend(logP); // elements.log は addLog 関数内で使われているログ表示領域の要素です
             };
 
             initializeSimulator();
