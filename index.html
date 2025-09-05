@@ -933,19 +933,24 @@
                 const choices = [];
                 let allCardsForPick = [];
 
-                // 抽選対象の4枚をまとめて選ぶ
-                for (let i = 0; i < 4; i++) {
+                // ★★★ ここからが変更箇所 ★★★
+                // 抽選対象のカードが4枚見つかるまで、繰り返し抽選を行う
+                while (allCardsForPick.length < 4) {
                     const group = weightedRandom(pickInfo.groups);
-                    const card = (pickInfo.rarity, group, allCardsForPick);
+                    const card = getRandomCard(pickInfo.rarity, group, allCardsForPick);
+                    
+                    // cardがnullでなく、有効なカードが見つかった場合のみ配列に追加
                     if (card) {
                         allCardsForPick.push(card);
                     }
+                    // もしcardがnullだった場合は、何もせずループが継続され、
+                    // 次の有効なカードが見つかるまで抽選が繰り返される
                 }
-
+                
                 // 4枚を2枚ずつのペアに分割
                 choices.push([allCardsForPick[0], allCardsForPick[1]]);
                 choices.push([allCardsForPick[2], allCardsForPick[3]]);
-
+                
                 return choices;
             }
 
@@ -966,9 +971,9 @@
                 const cardPool = cardData[state.currentClass].cards.filter(c => {
                     // ★★★ 追加した条件 ★★★
                     // デッキに既に3枚あるカードは抽選対象から除外する
-                    //if (state.deck[c.name] && state.deck[c.name].count >= 3) {
-                    //    return false;
-                    //}
+                    if (state.deck[c.name] && state.deck[c.name].count >= 3) {
+                        return false;
+                    }
 
                     let rarityMatch = false;
                     if (rarity === "ゴールド/レジェンド") {
