@@ -996,12 +996,63 @@
 
             function updateDeckDisplay() {
                 elements.currentDeck.innerHTML = '';
-                const sortedDeck = Object.values(state.deck).sort((a, b) => a.rarity.localeCompare(b.rarity));
-                sortedDeck.forEach(card => {
+                
+                // デッキに入っているカードの配列を取得
+                const deckAsArray = Object.values(state.deck);
+
+                // sortDeckForQrCode と同じロジックでソート
+                deckAsArray.sort((a, b) => {
+                    // 1. コストで比較
+                    if (a.cost !== b.cost) {
+                        return a.cost - b.cost;
+                    }
+
+                    // IDから各種情報をパースする内部関数
+                    const parseId = (id) => {
+                        if (!id || id.length !== 8) return { classId: 9, typeId: 9, packId: 999, rarityId: 9, number: 99 };
+                        return {
+                            packId: parseInt(id.substring(0, 3)),
+                            classId: parseInt(id.substring(3, 4)),
+                            rarityId: parseInt(id.substring(4, 5)),
+                            typeId: parseInt(id.substring(5, 6)),
+                            number: parseInt(id.substring(6, 8))
+                        };
+                    };
+                    
+                    const idA = parseId(a.id);
+                    const idB = parseId(b.id);
+
+                    // 2. クラスで比較
+                    if (idA.classId !== idB.classId) {
+                        return idA.classId - idB.classId;
+                    }
+
+                    // 3. カードの種類で比較
+                    if (idA.typeId !== idB.typeId) {
+                        return idA.typeId - idB.typeId;
+                    }
+                    
+                    // 4. カードパックで比較
+                    if (idA.packId !== idB.packId) {
+                        return idA.packId - idB.packId;
+                    }
+
+                    // 5. レアリティで比較
+                    if (idA.rarityId !== idB.rarityId) {
+                        return idA.rarityId - idB.rarityId;
+                    }
+                    
+                    // 6. カード番号で比較
+                    return idA.number - idB.number;
+                });
+
+                // ソートされた配列を元にリストを画面に表示
+                deckAsArray.forEach(card => {
                     const li = document.createElement('li');
                     li.textContent = `${card.name} x${card.count}`;
                     elements.currentDeck.appendChild(li);
                 });
+
                 updateDeckCardCountDisplay();
             }
 
