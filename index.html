@@ -966,9 +966,9 @@
                 const cardPool = cardData[state.currentClass].cards.filter(c => {
                     // ★★★ 追加した条件 ★★★
                     // デッキに既に3枚あるカードは抽選対象から除外する
-                    if (state.deck[c.name] && state.deck[c.name].count >= 3) {
-                        return false;
-                    }
+                    //if (state.deck[c.name] && state.deck[c.name].count >= 3) {
+                    //    return false;
+                    //}
 
                     let rarityMatch = false;
                     if (rarity === "ゴールド/レジェンド") {
