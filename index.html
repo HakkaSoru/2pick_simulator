@@ -227,6 +227,7 @@
 
             <div class="deck-list-container">
                 <h3>デッキリスト</h3>
+                <canvas id="mana-curve-chart" width="350" height="150"></canvas>
                 <ul id="current-deck" class="deck-list"></ul>
             </div>
 
@@ -242,6 +243,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         window.onload = function () {
             const neutralCards = [
@@ -801,6 +803,60 @@
                 return sortedCards.map(card => card.id);
             }
 
+            let manaCurveChart = null; // チャートのインスタンスを保持する変数
+            
+            function renderManaCurveChart() {
+                const manaCounts = {};
+                for (let i = 0; i <= 10; i++) {
+                    manaCounts[i] = 0;
+                }
+            
+                for (const cardName in state.deck) {
+                    const card = state.deck[cardName];
+                    if (card.cost >= 10) {
+                        manaCounts[10] += card.count; // 10コスト以上は10にまとめる
+                    } else {
+                        manaCounts[card.cost] = (manaCounts[card.cost] || 0) + card.count;
+                    }
+                }
+            
+                const ctx = document.getElementById('mana-curve-chart').getContext('2d');
+                const labels = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10+"];
+                const data = Object.values(manaCounts);
+            
+                if (manaCurveChart) {
+                    manaCurveChart.data.datasets[0].data = data;
+                    manaCurveChart.update();
+                } else {
+                    manaCurveChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: '枚数',
+                                data: data,
+                                backgroundColor: '#3b82f6',
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        stepSize: 1 // Y軸の目盛りを1ずつにする
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    display: false // グラフのラベルを非表示に
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+
             function initializeSimulator() {
                 renderClassSelection();
                 elements.rerollCount.textContent = state.rerollCount;
@@ -1054,6 +1110,8 @@
                 });
 
                 updateDeckCardCountDisplay();
+                // updateDeckDisplay の一番最後に追加
+                renderManaCurveChart();
             }
 
             function updateDeckCardCountDisplay() {
