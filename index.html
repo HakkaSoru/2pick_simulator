@@ -936,7 +936,7 @@
                 // 抽選対象の4枚をまとめて選ぶ
                 for (let i = 0; i < 4; i++) {
                     const group = weightedRandom(pickInfo.groups);
-                    const card = getRandomCard(pickInfo.rarity, group, allCardsForPick);
+                    const card = (pickInfo.rarity, group, allCardsForPick);
                     if (card) {
                         allCardsForPick.push(card);
                     }
@@ -964,6 +964,12 @@
 
             function getRandomCard(rarity, group, excludeCards = []) {
                 const cardPool = cardData[state.currentClass].cards.filter(c => {
+                    // ★★★ 追加した条件 ★★★
+                    // デッキに既に3枚あるカードは抽選対象から除外する
+                    if (state.deck[c.name] && state.deck[c.name].count >= 3) {
+                        return false;
+                    }
+
                     let rarityMatch = false;
                     if (rarity === "ゴールド/レジェンド") {
                         rarityMatch = c.rarity === "ゴールド" || c.rarity === "レジェンド";
@@ -972,13 +978,15 @@
                     }
                     const groupMatch = c.group === group;
                     const exclusionMatch = !excludeCards.some(ec => ec.name === c.name);
-
+                    
                     const isClassCard = cardData[state.currentClass].classCards.some(cc => cc.name === c.name);
                     const isNeutralCard = neutralCards.some(nc => nc.name === c.name);
 
                     return rarityMatch && groupMatch && exclusionMatch && (isClassCard || isNeutralCard);
                 });
+
                 if (cardPool.length === 0) {
+                    // 抽選対象のカードがない場合は null を返す
                     return null;
                 }
                 return cardPool[Math.floor(Math.random() * cardPool.length)];
