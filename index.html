@@ -282,6 +282,7 @@
 
             const cardData = {
                 "エルフ": {
+                    rerollCount: 3,
                     classCards: [
                         { id: "10312120", name: "樹海の戦士", cost: 4, rarity: "シルバー", group: "new" },
                         { id: "10311120", name: "妖精剣の担い手", cost: 2, rarity: "ブロンズ", group: "new" },
@@ -335,6 +336,7 @@
                     ]
                 },
                 "ロイヤル": {
+                    rerollCount: 3,
                     classCards: [
                         { id: "10322110", name: "簒奪の祈祷者", cost: 2, rarity: "シルバー", group: "new" },
                         { id: "10321110", name: "簒奪の肯定者", cost: 2, rarity: "ブロンズ", group: "new" },
@@ -389,6 +391,7 @@
                     ]
                 },
                 "ウィッチ": {
+                    rerollCount: 7,
                     classCards: [
                         { id: "10332310", name: "デュアルクリエイト", cost: 4, rarity: "シルバー", group: "new" },
                         { id: "10331310", name: "クリスタルゲイジング", cost: 4, rarity: "ブロンズ", group: "new" },
@@ -443,6 +446,7 @@
                     ]
                 },
                 "ドラゴン": {
+                    rerollCount: 3,
                     classCards: [
                         { id: "10342210", name: "侮蔑の国", cost: 2, rarity: "シルバー", group: "new" },
                         { id: "10341120", name: "吹雪のドラゴニュート", cost: 6, rarity: "ブロンズ", group: "new" },
@@ -497,6 +501,7 @@
                     ]
                 },
                 "ナイトメア": {
+                    rerollCount: 3,
                     classCards: [
                         { id: "10352110", name: "混融の祈祷者", cost: 4, rarity: "シルバー", group: "new" },
                         { id: "10351120", name: "泡沫の鬼姫", cost: 8, rarity: "ブロンズ", group: "new" },
@@ -551,6 +556,7 @@
                     ]
                 },
                 "ビショップ": {
+                    rerollCount: 3,
                     classCards: [
                         { id: "10362210", name: "安息の神殿", cost: 3, rarity: "シルバー", group: "new" },
                         { id: "10361110", name: "安息の肯定者", cost: 2, rarity: "ブロンズ", group: "new" },
@@ -605,6 +611,7 @@
                     ]
                 },
                 "ネメシス": {
+                    rerollCount: 3,
                     classCards: [
                         { id: "10372120", name: "フィールドエンジニア", cost: 5, rarity: "シルバー", group: "new" },
                         { id: "10371120", name: "音速の飛行兵", cost: 7, rarity: "ブロンズ", group: "new" },
@@ -691,7 +698,7 @@
                 currentClass: null,
                 deck: {},
                 pickCount: 0,
-                rerollCount: 2,
+                rerollCount: 0,
                 cardsInDeckCount: 0
             };
 
@@ -901,17 +908,22 @@
                 state.currentClass = className;
                 state.cardsInDeckCount = 0;
                 state.deck = {};
-
+                
+                // ★★★ 追加した箇所 ★★★
+                // 選択されたクラスの再抽選回数をstateに設定
+                state.rerollCount = cardData[className].rerollCount;
+                elements.rerollCount.textContent = state.rerollCount; // 表示も更新
+                
                 // 確定カードをデッキに追加
                 addCardToDeck(guaranteedCards[0]);
                 addCardToDeck(guaranteedCards[1]);
-
+                
                 elements.classSelection.style.display = 'none';
                 elements.pickPhase.style.display = 'block';
-
+                
                 state.pickCount = 0;
                 elements.pickCountDisplay.textContent = `${state.pickCount}/19`;
-
+                
                 pickNext();
             }
 
